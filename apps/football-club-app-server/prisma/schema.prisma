@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model News {
+  content       String?
+  createdAt     DateTime  @default(now())
+  id            String    @id @default(cuid())
+  publishedDate DateTime?
+  title         String?
+  updatedAt     DateTime  @updatedAt
+}
+
+model Player {
+  createdAt   DateTime            @default(now())
+  id          String              @id @default(cuid())
+  lineups     Lineup[]
+  name        String?
+  nationality String?
+  numberField Int?
+  position    EnumPlayerPosition?
+  updatedAt   DateTime            @updatedAt
+}
+
+model Match {
+  createdAt  DateTime  @default(now())
+  date       DateTime?
+  homeGround Boolean?
+  id         String    @id @default(cuid())
+  lineups    Lineup[]
+  opponent   String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Lineup {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  match     Match?   @relation(fields: [matchId], references: [id])
+  matchId   String?
+  player    Player?  @relation(fields: [playerId], references: [id])
+  playerId  String?
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  createdAt   DateTime @default(now())
+  id          String   @id @default(cuid())
+  name        String?
+  permissions Json?
+  updatedAt   DateTime @updatedAt
+}
+
+enum EnumPlayerPosition {
+  Option1
+}
